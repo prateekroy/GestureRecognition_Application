@@ -8,22 +8,25 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.util.Log;
 import android.widget.TextView;
 import android.os.PowerManager;
 
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
+import android.widget.Toast;
+
+import static android.content.Context.POWER_SERVICE;
 
 
-public class AndroidAccelerometerExample extends Activity implements SensorEventListener {
+public class AndroidAccelerometerExample implements SensorEventListener {
 
     private PowerManager powerManager;
+    private Sensor mAccelerometer;
     private PowerManager.WakeLock wakeLock;
     private int field = 0x00000020;
 
     private float lastX, lastY, lastZ;
-    private SensorManager sensorManager;
-    private Sensor accelerometer;
     private float deltaXMax = 0;
     private float deltaYMax = 0;
     private float deltaZMax = 0;
@@ -34,58 +37,67 @@ public class AndroidAccelerometerExample extends Activity implements SensorEvent
     private float vibrateThreshold = 0;
     private TextView currentX, currentY, currentZ, maxX, maxY, maxZ;
     public Vibrator v;
+    Context context;
+    Activity activity;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    public AndroidAccelerometerExample(PowerManager _powerManager, Sensor _mAccelerometer,
+                                       Vibrator _vibrator, String _classname,
+                                       Context _context,Activity _activity)
+    {
+        Log.wtf("WIRELESS", "Inside Constructor");
+        powerManager = _powerManager;
+        mAccelerometer = _mAccelerometer;
+        wakeLock = powerManager.newWakeLock(field, _classname);
+        vibrateThreshold = mAccelerometer.getMaximumRange() / 2;
+
+        v = _vibrator;
+        context = _context;
+        activity = _activity;
         initializeViews();
-        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
-            // success! we have an accelerometer
-            accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-            sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-            vibrateThreshold = accelerometer.getMaximumRange() / 2;
-        } else {
-            // fai! we dont have an accelerometer!
-        }
-        //initialize vibration
-
-        try {
-            // Yeah, this is hidden field.
-            field = PowerManager.class.getClass().getField("SCREEN_BRIGHT_WAKE_LOCK").getInt(null);
-        } catch (Throwable ignored) {
-        }
-
-        powerManager = (PowerManager) getSystemService(POWER_SERVICE);
-        wakeLock = powerManager.newWakeLock(field, getLocalClassName());
-
-        v = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
+        Log.wtf("WIRELESS", "Constructed");
     }
+
+//    @Override
+//    public void onCreate(Bundle savedInstanceState) {
+//        Log.wtf("WIRELESS", "AccelExample on Create");
+//        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.activity_main);
+//        initializeViews();
+//        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+//        if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
+//            // success! we have an accelerometer
+//            accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+//            sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+//            vibrateThreshold = accelerometer.getMaximumRange() / 2;
+//        } else {
+//            // fai! we dont have an accelerometer!
+//        }
+//        //initialize vibration
+//
+//        try {
+//            // Yeah, this is hidden field.
+//            field = PowerManager.class.getClass().getField("SCREEN_BRIGHT_WAKE_LOCK").getInt(null);
+//        } catch (Throwable ignored) {
+//        }
+//
+//
+//    }
     public void initializeViews() {
-        currentX = (TextView) findViewById(R.id.currentX);
-        currentY = (TextView) findViewById(R.id.currentY);
-        currentZ = (TextView) findViewById(R.id.currentZ);
-        maxX = (TextView) findViewById(R.id.maxX);
-        maxY = (TextView) findViewById(R.id.maxY);
-        maxZ = (TextView) findViewById(R.id.maxZ);
+        currentX = (TextView) activity.findViewById(R.id.currentX);
+        currentY = (TextView) activity.findViewById(R.id.currentY);
+        currentZ = (TextView) activity.findViewById(R.id.currentZ);
+        maxX = (TextView) activity.findViewById(R.id.maxX);
+        maxY = (TextView) activity.findViewById(R.id.maxY);
+        maxZ = (TextView) activity.findViewById(R.id.maxZ);
     }
-    //onResume() register the accelerometer for listening the events
-    protected void onResume() {
-        super.onResume();
-        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-    }
-    //onPause() unregister the accelerometer for stop listening the events
 
-    protected void onPause() {
-        super.onPause();
-        sensorManager.unregisterListener(this);
-    }
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
     }
+
     @Override
     public void onSensorChanged(SensorEvent event) {
+        Log.wtf("WIRELESS", "AccelExample Event");
         long curTime = System.currentTimeMillis();
         if ((curTime - lastUpdate) > 100) {
             if (event.values[2] > 0) {
