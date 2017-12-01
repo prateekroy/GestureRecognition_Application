@@ -97,7 +97,7 @@ public class AndroidAccelerometerExample implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        Log.wtf("WIRELESS", "AccelExample Event");
+//        Log.wtf("WIRELESS", "AccelExample Event");
         long curTime = System.currentTimeMillis();
         if ((curTime - lastUpdate) > 100) {
             if (event.values[2] > 0) {

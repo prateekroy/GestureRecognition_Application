@@ -11,7 +11,7 @@ public class ShakeDetector implements SensorEventListener {
 
     private static final float SHAKE_THRESHOLD_GRAVITY = 2.7F;
     private static final int SHAKE_SLOP_TIME_MS = 500;
-    private static final int SHAKE_COUNT_RESET_TIME_MS = 3000;
+    private static final int SHAKE_COUNT_RESET_TIME_MS = 4000;
 
     private OnShakeListener mListener;
     private long mShakeTimestamp;
@@ -52,7 +52,7 @@ public class ShakeDetector implements SensorEventListener {
                     return;
                 }
 
-                // reset the shake count after 3 seconds of no shakes
+                // reset the shake count after 4 seconds of no shakes
                 if (mShakeTimestamp + SHAKE_COUNT_RESET_TIME_MS < now) {
                     mShakeCount = 0;
                 }

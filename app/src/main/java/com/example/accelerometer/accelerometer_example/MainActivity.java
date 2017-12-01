@@ -2,6 +2,7 @@ package com.example.accelerometer.accelerometer_example;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Camera;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.PowerManager;
@@ -17,10 +18,13 @@ public class MainActivity extends AppCompatActivity {
     private Sensor mAccelerometer;
     private Vibrator vibrator;
     private PowerManager mPowerManager;
+    private Camera camera;
     private Context mContext;
     private Activity mActivity;
     //Gesture Class
     private ShakeDetector mShakeDetector;
+    private ChopDetector mChopDetector;
+    private TwistDetector mTwistDetector;
     private AndroidAccelerometerExample mAccelerometerExample;
 
     @Override
@@ -44,6 +48,12 @@ public class MainActivity extends AppCompatActivity {
 
         //Shake Detector
         createShakeDetector();
+
+        //Chop Detector
+        createChopDetector();
+
+        //Twist Detector
+        createTwistDetector();
     }
 
     @Override
@@ -52,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
         // Add the following line to register the Session Manager Listener onResume
         mSensorManager.registerListener(mShakeDetector, mAccelerometer,	SensorManager.SENSOR_DELAY_UI);
         mSensorManager.registerListener(mAccelerometerExample, mAccelerometer,	SensorManager.SENSOR_DELAY_UI);
+        mSensorManager.registerListener(mChopDetector, mAccelerometer,	SensorManager.SENSOR_DELAY_UI);
+        mSensorManager.registerListener(mTwistDetector, mAccelerometer,	SensorManager.SENSOR_DELAY_UI);
     }
 
     @Override
@@ -59,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
         // Add the following line to unregister the Sensor Manager onPause
         mSensorManager.unregisterListener(mShakeDetector);
         mSensorManager.unregisterListener(mAccelerometerExample);
+        mSensorManager.unregisterListener(mChopDetector);
+        mSensorManager.unregisterListener(mTwistDetector);
         super.onPause();
     }
 
@@ -83,6 +97,29 @@ public class MainActivity extends AppCompatActivity {
 //                handleShakeEvent(count);
                 Log.d("WIRELESS", "I got a shake");
                 Toast.makeText(mContext, "Shake!",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    void createChopDetector(){
+        mChopDetector = new ChopDetector();
+        mChopDetector.setOnChopListener(new ChopDetector.OnChopListener() {
+            @Override
+            public void onChop() {
+                Log.d("WIRELESS", "I got a chop");
+                Toast.makeText(mContext, "Chop!",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    void createTwistDetector(){
+        mTwistDetector = new TwistDetector();
+        mTwistDetector.setOnTwistListener(new TwistDetector.OnTwistListener(){
+            public void onTwist(){
+                Log.d("WIRELESS", "I got a Twist");
+                Toast.makeText(mContext, "Twist!",
                         Toast.LENGTH_SHORT).show();
             }
         });
