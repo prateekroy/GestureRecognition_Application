@@ -3,12 +3,18 @@ package com.example.accelerometer.accelerometer_example;
 /**
  * Created by PRATEEK on 11/30/2017.
  */
+
+import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraManager;
 import android.util.FloatMath;
 import android.util.Log;
+
+import java.security.Policy;
 
 public class ChopDetector implements SensorEventListener{
 
@@ -17,6 +23,8 @@ public class ChopDetector implements SensorEventListener{
     private final long timeForChopGesture = 250;
     private long lastTimeChopDetected = System.currentTimeMillis();
     private boolean isGestureInProgress = false;
+    private boolean bflashOn = false;
+    private CameraManager objCameraManager;
 
     public void setOnChopListener(ChopDetector.OnChopListener listener) {
         this.mListener = listener;
@@ -29,6 +37,40 @@ public class ChopDetector implements SensorEventListener{
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
         // ignore
+    }
+
+    public void SetCameraObject(CameraManager _obj){
+        objCameraManager = _obj;
+    }
+
+
+
+    //Reference : https://www.spaceotechnologies.com/implement-flashlight-torchlight-android-app/
+    public void TurnOnFlash() throws CameraAccessException {
+        String mCameraId = "";
+        try {
+            mCameraId = objCameraManager.getCameraIdList()[0];
+        } catch (CameraAccessException e) {
+            //e.printStackTrace();
+        }
+        if (mCameraId != "" && bflashOn == false) {
+            objCameraManager.setTorchMode(mCameraId, true);
+            bflashOn = true;
+        }
+    }
+
+    public void TurnOffFlash() {
+        String mCameraId = "";
+        try {
+            mCameraId = objCameraManager.getCameraIdList()[0];
+            if (mCameraId != "" && bflashOn == true) {
+                objCameraManager.setTorchMode(mCameraId, false);
+                bflashOn = false;
+            }
+        } catch (CameraAccessException e) {
+            //e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -51,6 +93,17 @@ public class ChopDetector implements SensorEventListener{
                 if (timeDelta > timeForChopGesture && isGestureInProgress) {
                     isGestureInProgress = false;
                     mListener.onChop();
+                    try {
+                        if (bflashOn) {
+                            TurnOffFlash();
+                        }
+                        else{
+                            TurnOnFlash();
+                        }
+                    }
+                    catch (CameraAccessException e){
+                        //Cant turn on flash
+                    }
                 }
             }
 

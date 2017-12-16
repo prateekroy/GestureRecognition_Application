@@ -9,6 +9,7 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
+import android.view.Display;
 import android.widget.TextView;
 import android.os.PowerManager;
 
@@ -39,6 +40,15 @@ public class AndroidAccelerometerExample implements SensorEventListener {
     public Vibrator v;
     Context context;
     Activity activity;
+    private AndroidAccelerometerExample.OnSleepListener mListener;
+
+    public void setOnSleepListener(AndroidAccelerometerExample.OnSleepListener listener) {
+        this.mListener = listener;
+    }
+
+    public interface OnSleepListener {
+        public void onSleep();
+    }
 
     public AndroidAccelerometerExample(PowerManager _powerManager, Sensor _mAccelerometer,
                                        Vibrator _vibrator, String _classname,
@@ -102,6 +112,8 @@ public class AndroidAccelerometerExample implements SensorEventListener {
         if ((curTime - lastUpdate) > 100) {
             if (event.values[2] > 0) {
                 if (wakeLock.isHeld()) {
+//                    Log.d("LOGGONG", "Wake");
+                    mListener.onSleep();
                     wakeLock.release();
                 }
             }
@@ -126,9 +138,12 @@ public class AndroidAccelerometerExample implements SensorEventListener {
             if (event.values[2] <= 0) {
 
                 if (!wakeLock.isHeld()) {
+//                    Log.d("LOGGONG", "Sleep");
+                    mListener.onSleep();
                     wakeLock.acquire();
                 }
             }
+            lastUpdate = curTime;
         }
 
     }
