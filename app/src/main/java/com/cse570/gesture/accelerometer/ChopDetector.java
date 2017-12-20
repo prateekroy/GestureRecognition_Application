@@ -1,4 +1,4 @@
-package com.example.accelerometer.accelerometer_example;
+package com.cse570.gesture.accelerometer;
 
 /**
  * Created by PRATEEK on 10/30/2017.

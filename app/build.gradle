@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 26
     defaultConfig {
-        applicationId "com.example.accelerometer.accelerometer_example"
+        applicationId "com.cse570.gesture.accelerometer"
         minSdkVersion 24
         targetSdkVersion 26
         versionCode 1

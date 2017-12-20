@@ -209,7 +209,7 @@
 
             <TextView
 
-                android:id="@+id/currentX"
+                android:id="@+id/accelerationX"
 
                 android:layout_width="wrap_content"
 
@@ -261,7 +261,7 @@
 
             <TextView
 
-                android:id="@+id/currentY"
+                android:id="@+id/accelerationY"
 
                 android:layout_width="wrap_content"
 
@@ -313,7 +313,7 @@
 
             <TextView
 
-                android:id="@+id/currentZ"
+                android:id="@+id/accelerationZ"
 
                 android:layout_width="wrap_content"
 
