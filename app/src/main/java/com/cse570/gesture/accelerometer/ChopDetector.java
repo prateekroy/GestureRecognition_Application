@@ -3,8 +3,8 @@ package com.cse570.gesture.accelerometer;
 /**
  * Created by PRATEEK on 10/30/2017.
  */
-
-
+import android.hardware.Camera;
+import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -101,5 +101,4 @@ public class ChopDetector implements SensorEventListener{
         }
 
     }
-
 }
