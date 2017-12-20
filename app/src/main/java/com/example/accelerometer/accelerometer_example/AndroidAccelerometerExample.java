@@ -28,15 +28,15 @@ public class AndroidAccelerometerExample implements SensorEventListener {
     private int field = 0x00000020;
 
     private float lastX, lastY, lastZ;
-    private float deltaXMax = 0;
-    private float deltaYMax = 0;
-    private float deltaZMax = 0;
-    private float deltaX = 0;
-    private float deltaY = 0;
-    private float deltaZ = 0;
+    private float changeinXMax = 0;
+    private float changeinYMax = 0;
+    private float changeinZMax = 0;
+    private float changeinX = 0;
+    private float changeinY = 0;
+    private float changeinZ = 0;
     private long lastUpdate = 0;
     private float vibrateThreshold = 0;
-    private TextView currentX, currentY, currentZ, maxX, maxY, maxZ;
+    private TextView accelerationX, accelerationY, accelerationZ, maxX, maxY, maxZ;
     public Vibrator v;
     Context context;
     Activity activity;
@@ -67,35 +67,12 @@ public class AndroidAccelerometerExample implements SensorEventListener {
         Log.wtf("WIRELESS", "Constructed");
     }
 
-//    @Override
-//    public void onCreate(Bundle savedInstanceState) {
-//        Log.wtf("WIRELESS", "AccelExample on Create");
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_main);
-//        initializeViews();
-//        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-//        if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
-//            // success! we have an accelerometer
-//            accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-//            sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-//            vibrateThreshold = accelerometer.getMaximumRange() / 2;
-//        } else {
-//            // fai! we dont have an accelerometer!
-//        }
-//        //initialize vibration
-//
-//        try {
-//            // Yeah, this is hidden field.
-//            field = PowerManager.class.getClass().getField("SCREEN_BRIGHT_WAKE_LOCK").getInt(null);
-//        } catch (Throwable ignored) {
-//        }
-//
-//
-//    }
+
+
     public void initializeViews() {
-        currentX = (TextView) activity.findViewById(R.id.currentX);
-        currentY = (TextView) activity.findViewById(R.id.currentY);
-        currentZ = (TextView) activity.findViewById(R.id.currentZ);
+        accelerationX = (TextView) activity.findViewById(R.id.accelerationX);
+        accelerationY = (TextView) activity.findViewById(R.id.accelerationY);
+        accelerationZ = (TextView) activity.findViewById(R.id.accelerationZ);
         maxX = (TextView) activity.findViewById(R.id.maxX);
         maxY = (TextView) activity.findViewById(R.id.maxY);
         maxZ = (TextView) activity.findViewById(R.id.maxZ);
@@ -117,22 +94,22 @@ public class AndroidAccelerometerExample implements SensorEventListener {
                     wakeLock.release();
                 }
             }
-            // clean current values
+            // clean acceleration values
             displayCleanValues();
-            // display the current x,y,z accelerometer values
-            displayCurrentValues();
+            // display the acceleration x,y,z accelerometer values
+            displayaccelerationValues();
             // display the max x,y,z accelerometer values
             displayMaxValues();
             // get the change of the x,y,z values of the accelerometer
-            deltaX = Math.abs(lastX - event.values[0]);
-            deltaY = Math.abs(lastY - event.values[1]);
-            deltaZ = Math.abs(lastZ - event.values[2]);
+            changeinX = Math.abs(lastX - event.values[0]);
+            changeinY = Math.abs(lastY - event.values[1]);
+            changeinZ = Math.abs(lastZ - event.values[2]);
             // if the change is below 2, it is just plain noise
-            if (deltaX < 2)
-                deltaX = 0;
-            if (deltaY < 2)
-                deltaY = 0;
-            if ((deltaZ > vibrateThreshold) || (deltaY > vibrateThreshold) || (deltaZ > vibrateThreshold)) {
+            if (changeinX < 2)
+                changeinX = 0;
+            if (changeinY < 2)
+                changeinY = 0;
+            if ((changeinZ > vibrateThreshold) || (changeinY > vibrateThreshold) || (changeinZ > vibrateThreshold)) {
                 v.vibrate(50);
             }
             if (event.values[2] <= 0) {
@@ -148,34 +125,34 @@ public class AndroidAccelerometerExample implements SensorEventListener {
 
     }
     public void displayCleanValues() {
-        currentX.setText("0.0");
-        currentY.setText("0.0");
-        currentZ.setText("0.0");
+        accelerationX.setText("0.0");
+        accelerationY.setText("0.0");
+        accelerationZ.setText("0.0");
     }
 
 
 
-    // display the current x,y,z accelerometer values
+    // display the acceleration x,y,z accelerometer values
 
-    public void displayCurrentValues() {
-        currentX.setText(Float.toString(deltaX));
-        currentY.setText(Float.toString(deltaY));
-        currentZ.setText(Float.toString(deltaZ));
+    public void displayaccelerationValues() {
+        accelerationX.setText(Float.toString(changeinX));
+        accelerationY.setText(Float.toString(changeinY));
+        accelerationZ.setText(Float.toString(changeinZ));
     }
 
     // display the max x,y,z accelerometer values
     public void displayMaxValues() {
-        if (deltaX > deltaXMax) {
-            deltaXMax = deltaX;
-            maxX.setText(Float.toString(deltaXMax));
+        if (changeinX > changeinXMax) {
+            changeinXMax = changeinX;
+            maxX.setText(Float.toString(changeinXMax));
         }
-        if (deltaY > deltaYMax) {
-            deltaYMax = deltaY;
-            maxY.setText(Float.toString(deltaYMax));
+        if (changeinY > changeinYMax) {
+            changeinYMax = changeinY;
+            maxY.setText(Float.toString(changeinYMax));
         }
-        if (deltaZ > deltaZMax) {
-            deltaZMax = deltaZ;
-            maxZ.setText(Float.toString(deltaZMax));
+        if (changeinZ > changeinZMax) {
+            changeinZMax = changeinZ;
+            maxZ.setText(Float.toString(changeinZMax));
         }
     }
 }
