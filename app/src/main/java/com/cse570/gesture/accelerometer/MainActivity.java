@@ -109,8 +109,7 @@ public class MainActivity extends AppCompatActivity {
     void createAccelerometerExample(){
         String localClass = getLocalClassName();
         mSleepDetector = new SleepDetector(mPowerManager, mAccelerometer,
-                vibrator, localClass,
-                mContext, mActivity);
+                localClass, mActivity);
         mSleepDetector.setOnSleepListener(new SleepDetector.OnSleepListener() {
             @Override
             public void onSleep() {

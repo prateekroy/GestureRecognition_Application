@@ -1,11 +1,9 @@
 package com.cse570.gesture.accelerometer;
 
 import android.app.Activity;
-import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
-import android.os.Vibrator;
 import android.util.Log;
 import android.widget.TextView;
 import android.os.PowerManager;
@@ -23,8 +21,6 @@ public class SleepDetector implements SensorEventListener {
     private float changeinZ = 0;
     private long lastUpdate = 0;
     private TextView accelerationX, accelerationY, accelerationZ;
-    public Vibrator v;
-    Context context;
     Activity activity;
     private SleepDetector.OnSleepListener mListener;
 
@@ -37,8 +33,7 @@ public class SleepDetector implements SensorEventListener {
     }
 
     public SleepDetector(PowerManager _powerManager, Sensor _mAccelerometer,
-                         Vibrator _vibrator, String _classname,
-                         Context _context, Activity _activity)
+                         String _classname, Activity _activity)
     {
         Log.wtf("WIRELESS", "Inside Constructor");
         powerManager = _powerManager;
@@ -46,20 +41,13 @@ public class SleepDetector implements SensorEventListener {
         wakeLock = powerManager.newWakeLock(field, _classname);
 
 
-        v = _vibrator;
-        context = _context;
         activity = _activity;
-        initializeViews();
+        accelerationX = activity.findViewById(R.id.accelerationX);
+        accelerationY = activity.findViewById(R.id.accelerationY);
+        accelerationZ = activity.findViewById(R.id.accelerationZ);
         Log.wtf("WIRELESS", "Constructed");
     }
 
-
-
-    public void initializeViews() {
-        accelerationX = (TextView) activity.findViewById(R.id.accelerationX);
-        accelerationY = (TextView) activity.findViewById(R.id.accelerationY);
-        accelerationZ = (TextView) activity.findViewById(R.id.accelerationZ);
-    }
 
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
     }
@@ -76,11 +64,9 @@ public class SleepDetector implements SensorEventListener {
                     wakeLock.release();
                 }
             }
-            // clean acceleration values
-            displayCleanValues();
-            // display the acceleration x,y,z accelerometer values
-            displayaccelerationValues();
-            // get the change of the x,y,z values of the accelerometer
+
+            updateDisplay();
+            
             changeinX = event.values[0];
             changeinY = event.values[1];
             changeinZ = event.values[2];
@@ -97,17 +83,11 @@ public class SleepDetector implements SensorEventListener {
         }
 
     }
-    public void displayCleanValues() {
+
+    public void updateDisplay(){
         accelerationX.setText("0.0");
         accelerationY.setText("0.0");
         accelerationZ.setText("0.0");
-    }
-
-
-
-    // display the acceleration x,y,z accelerometer values
-
-    public void displayaccelerationValues() {
         accelerationX.setText(Float.toString(changeinX));
         accelerationY.setText(Float.toString(changeinY));
         accelerationZ.setText(Float.toString(changeinZ));
