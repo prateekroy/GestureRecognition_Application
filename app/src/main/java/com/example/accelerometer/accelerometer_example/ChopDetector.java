@@ -3,12 +3,15 @@ package com.example.accelerometer.accelerometer_example;
 /**
  * Created by PRATEEK on 11/30/2017.
  */
+import android.hardware.Camera;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.FloatMath;
 import android.util.Log;
+
+import java.security.Policy;
 
 public class ChopDetector implements SensorEventListener{
 
@@ -56,4 +59,5 @@ public class ChopDetector implements SensorEventListener{
 
         }
     }
+    
 }
