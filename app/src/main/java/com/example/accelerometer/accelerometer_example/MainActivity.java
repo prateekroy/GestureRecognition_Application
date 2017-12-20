@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
         mShakeDetector.setOnShakeListener(new ShakeDetector.OnShakeListener() {
 
             @Override
-            public void onShake(int count) {
+            public void onShake() {
 				/*
 				 * The following method, "handleShakeEvent(count):" is a stub //
 				 * method you would use to setup whatever you want done once the
