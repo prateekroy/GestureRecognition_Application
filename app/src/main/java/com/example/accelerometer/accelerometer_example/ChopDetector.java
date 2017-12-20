@@ -15,10 +15,14 @@ import android.hardware.camera2.CameraManager;
 public class ChopDetector implements SensorEventListener{
 
     private ChopDetector.OnChopListener mListener;
-    private long lastTimeChopDetected = System.currentTimeMillis();
-    private boolean isProgress = false;
+    private long lastDetect = System.currentTimeMillis();
+    private boolean isChop = false;
     private boolean bflashOn = false;
     private CameraManager objCameraManager;
+
+    long GetCurrentTime(){
+        return System.currentTimeMillis();
+    }
 
     public void setOnChopListener(ChopDetector.OnChopListener listener) {
         this.mListener = listener;
@@ -28,7 +32,6 @@ public class ChopDetector implements SensorEventListener{
         public void onChop();
     }
 
-    @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
         // ignore
     }
@@ -67,38 +70,36 @@ public class ChopDetector implements SensorEventListener{
 
     }
 
-    @Override
     public void onSensorChanged(SensorEvent event) {
 //        Log.wtf("WIRELESS", "Chop Event");
-        if (mListener != null) {
 
-            float x = event.values[0];
-            float y = event.values[1];
-            float z = event.values[2];
+        float x = event.values[0];
+        float y = event.values[1];
+        float z = event.values[2];
 
-            if (x < -2 && y < 8 && z > 0){
-                lastTimeChopDetected = System.currentTimeMillis();
-                isProgress = true;
-            }
-            else if (x > 8 && y < 3 ){
-                long timeDelta = (System.currentTimeMillis() - lastTimeChopDetected);
-                if (timeDelta > 250 && isProgress) {
-                    isProgress = false;
-                    mListener.onChop();
-                    try {
-                        if (bflashOn) {
-                            TurnOffFlash();
-                        }
-                        else{
-                            TurnOnFlash();
-                        }
+        if (x < -2 && y < 8 && z > 0){
+            lastDetect = GetCurrentTime();
+            isChop = true;
+        }
+        else if (x > 8 && y < 3 ){
+            long diff = (GetCurrentTime() - lastDetect);
+            if (diff > 250 && isChop) {
+                isChop = false;
+                mListener.onChop();
+                try {
+                    if (bflashOn) {
+                        TurnOffFlash();
                     }
-                    catch (CameraAccessException e){
-                        //Cant turn on flash
+                    else{
+                        TurnOnFlash();
                     }
                 }
+                catch (CameraAccessException e){
+                    //Cant turn on flash
+                }
             }
-
         }
+
     }
+
 }

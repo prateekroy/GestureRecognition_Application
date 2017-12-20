@@ -15,6 +15,10 @@ public class ShakeDetector implements SensorEventListener {
     private OnShakeListener mListener;
     private long mtime;
 
+    long GetCurrentTime(){
+        return System.currentTimeMillis();
+    }
+
     public void setOnShakeListener(OnShakeListener listener) {
         this.mListener = listener;
     }
@@ -23,12 +27,10 @@ public class ShakeDetector implements SensorEventListener {
         public void onShake();
     }
 
-    @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
         // ignore
     }
 
-    @Override
     public void onSensorChanged(SensorEvent event) {
         Log.wtf("WIRELESS", "Shake Event");
 
@@ -46,7 +48,7 @@ public class ShakeDetector implements SensorEventListener {
         float force = (float)Math.sqrt(X * X + Y * Y + Z * Z);
 
         if (force > 2.7F) {
-            long currentTime = System.currentTimeMillis();
+            long currentTime = GetCurrentTime();
             // ignore shake events too close to each other (500ms)
             if (mtime + 500 > currentTime) {
                 return;
