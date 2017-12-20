@@ -84,7 +84,6 @@ public class ChopDetector implements SensorEventListener{
             long diff = (GetCurrentTime() - lastDetect);
             if (diff > 250 && isChop) {
                 isChop = false;
-                mListener.onChop();
                 try {
                     if (bflashOn) {
                         TurnOffFlash();
@@ -96,6 +95,7 @@ public class ChopDetector implements SensorEventListener{
                 catch (CameraAccessException e){
                     //Cant turn on flash
                 }
+                mListener.onChop();
             }
         }
 
