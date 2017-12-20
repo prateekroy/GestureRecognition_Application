@@ -188,14 +188,23 @@ public class MainActivity extends AppCompatActivity {
     public void ReadFileAndReport()
     {
         try {
-            InputStream in = openFileInput("logData.txt");
+            InputStream inStream = openFileInput("logData.txt");
 
-            if (in != null) {
-                InputStreamReader tmp=new InputStreamReader(in);
-                BufferedReader reader=new BufferedReader(tmp);
-                String str;
-                StringBuilder buf=new StringBuilder();
+            if (inStream != null) {
+                InputStreamReader streamReader=new InputStreamReader(inStream);
+                if (streamReader == null){
+                    Log.d("LOGGONG", "Stream Reader NULL");
+                    return;
+                }
+                BufferedReader reader=new BufferedReader(streamReader);
+                if (reader == null){
+                    Log.d("LOGGONG", "BufferedReader NULL");
+                    return;
+                }
+                StringBuilder buf=new StringBuilder(); String str;
+
                 while ((str = reader.readLine()) != null) {
+//                    Log.d("LOGGONG", buf.toString());
                     buf.append(str);
                 }
 
