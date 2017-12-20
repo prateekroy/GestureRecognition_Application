@@ -66,7 +66,7 @@ public class SleepDetector implements SensorEventListener {
             }
 
             updateDisplay();
-            
+
             changeinX = event.values[0];
             changeinY = event.values[1];
             changeinZ = event.values[2];

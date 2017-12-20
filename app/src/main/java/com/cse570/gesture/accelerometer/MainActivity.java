@@ -23,6 +23,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
+//Reference : Inspired from https://examples.javacodegeeks.com/android/core/hardware/sensor/android-accelerometer-example/
+//Used Resources from https://examples.javacodegeeks.com/android/core/hardware/sensor/android-accelerometer-example/
 
 public class MainActivity extends AppCompatActivity {
 
