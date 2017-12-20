@@ -61,7 +61,6 @@ public class SleepDetector implements SensorEventListener {
         accelerationZ = (TextView) activity.findViewById(R.id.accelerationZ);
     }
 
-    @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
     }
 

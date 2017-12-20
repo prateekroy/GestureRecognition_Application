@@ -77,7 +77,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        // Add the following line to register the Session Manager Listener onResume
         mSensorManager.registerListener(mShakeDetector, mAccelerometer,	SensorManager.SENSOR_DELAY_UI);
         mSensorManager.registerListener(mSleepDetector, mAccelerometer,	SensorManager.SENSOR_DELAY_UI);
         mSensorManager.registerListener(mChopDetector, mAccelerometer,	SensorManager.SENSOR_DELAY_UI);
@@ -85,7 +84,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onPause() {
-        // Add the following line to unregister the Sensor Manager onPause
         mChopDetector.TurnOffFlash();
         mSensorManager.unregisterListener(mShakeDetector);
         mSensorManager.unregisterListener(mSleepDetector);
@@ -117,7 +115,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSleep() {
                         sleepCount++;
-
             }
         });
     }
@@ -128,12 +125,6 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onShake() {
-				/*
-				 * The following method, "handleShakeEvent(count):" is a stub //
-				 * method you would use to setup whatever you want done once the
-				 * device has been shook.
-				 */
-//                handleShakeEvent(count);
                 Log.d("WIRELESS", "I got a shake");
                 Toast.makeText(mContext, "Shake!",
                         Toast.LENGTH_SHORT).show();
@@ -175,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
         else{
             button.setText("Start Log");
             Save("SmartScreenTrigger : " + sleepCount + " ShakeCount : " + shakeCount + " ChopCount : " + chopCount);
-            readFileInEditor();
+            ReadFileAndReport();
             state = 0;
         }
     }
@@ -194,75 +185,47 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    public void readFileInEditor()
-
+    public void ReadFileAndReport()
     {
-
         try {
-
             InputStream in = openFileInput("logData.txt");
 
             if (in != null) {
-
                 InputStreamReader tmp=new InputStreamReader(in);
-
                 BufferedReader reader=new BufferedReader(tmp);
-
                 String str;
-
                 StringBuilder buf=new StringBuilder();
-
                 while ((str = reader.readLine()) != null) {
-
                     buf.append(str);
-
                 }
 
 //                in.close();
 
                 Log.d("LOGGONG", buf.toString());
-                SendLoagcatMail(buf.toString());
-
+                SendMail(buf.toString());
             }
-
         }
 
         catch (java.io.FileNotFoundException e) {
-
-// that's OK, we probably haven't created it yet
-
+            // file not created yet
         }
 
         catch (Throwable t) {
             //
         }
-
     }
 
 
-    public void SendLoagcatMail(String body) {
-
-        // save logcat in file
-//        File outputFile = new File(mContext.getFilesDir(),
-//                "logData.txt");
-//
-//        try {
-//            Runtime.getRuntime().exec(
-//                    "logcat -f " + outputFile.getAbsolutePath());
-//        } catch (IOException e) {
-//            // TODO Auto-generated catch block
-//            Log.d("LOGGONG","No permission for microsd");
-//            e.printStackTrace();
-//        }
+    public void SendMail(String body) {
 
         //send file using email
         Intent emailIntent = new Intent(Intent.ACTION_SEND);
+
         // Set type to "email"
         emailIntent.setType("vnd.android.cursor.dir/email");
-        String to[] = {"prateek00000@gmail.com"};
-        emailIntent .putExtra(Intent.EXTRA_EMAIL, to);
-        // the attachment
-//        emailIntent .putExtra(Intent.EXTRA_STREAM, outputFile.getAbsolutePath());
+        String toemail[] = {"prateek00000@gmail.com"};
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, toemail);
+
         // the mail subject
         emailIntent .putExtra(Intent.EXTRA_SUBJECT, "Log Data");
         emailIntent.putExtra(Intent.EXTRA_TEXT, body.toString());
